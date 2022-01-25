@@ -3,7 +3,7 @@
 % m. williams
 
 clear all;
-% close all;
+close all;
 
 load ../edited_data/sfo_tsunami_noaa_gauge.mat
 
@@ -28,7 +28,7 @@ f = figure(99);
 plot(t_gmt,one_min,'k')
 datetick2('x','keeplimits')
 ylabel('[m]')
-xlabel('2010, GMT')
+xlabel('2011, GMT')
 title(['NOAA tsunami-capable gauge - ',station.name,' ',num2str(station.id)])
 saveas(f,'../images/time_record_sfo.eps')
 
@@ -92,4 +92,89 @@ ylim([1E-8 1E2])
 xlabel('Frequency [Hz]')
 title({'Msfoh 11-16, 2011','tsunami'})
 saveas(side_by_side,'../images/normal_and_tsunami_sfo_loglog_psd.eps')
+
+
+side_by_side_plus_timeseries = figure;
+ set(side_by_side_plus_timeseries, 'Position', [100 500 960 820])
+
+subplot(3,2,1:2)
+plot(t_gmt,one_min,'k')
+datetick2('x','keeplimits')
+ylim([-1.5 2.0])
+ylabel('MLLW [m]')
+xlabel('2011, GMT')
+title(['NOAA tsunami-capable gauge - ',station.name,' ',num2str(station.id)])
+
+subplot(3,2,[3 5])
+loglog(H_pre.Frequencies,H_pre.Data,'k')
+ylim([1E-8 1E2])
+ylabel('Power Spectral Density [m^2 Hz^{-1}]')
+xlabel('Frequency [Hz]')
+title({'March 7-11, 2011','normal'})
+
+subplot(3,2,[4 6])
+loglog(H_tsu.Frequencies,H_tsu.Data,'k')
+ylim([1E-8 1E2])
+xlabel('Frequency [Hz]')
+title({'March 11-16, 2011','tsunami'})
+filename = '../images/normal_and_tsunami_sfo_loglog_psd_with_timeseries';
+saveas(side_by_side_plus_timeseries,filename,'eps')
+saveas(side_by_side_plus_timeseries,filename,'png')
+
+side_by_side_plus_timeseries_cheat1 = figure;
+ set(side_by_side_plus_timeseries_cheat1, 'Position', [100 500 960 720])
+
+subplot(3,2,1:2)
+plot(t_gmt,one_min,'k')
+xlim([datenum(2011,3,7,12,0,0) datenum(2011,3,16,12,0,0)])
+datetick('x','keeplimits')
+ylim([-1.5 2.0])
+ylabel('MLLW [m]')
+xlabel('2011, GMT')
+title(['NOAA tsunami-capable gauge - ',station.name,' ',num2str(station.id)])
+
+filename = '../images/normal_and_tsunami_sfo_loglog_psd_with_timeseries_cheat1';
+saveas(side_by_side_plus_timeseries_cheat1,filename,'eps')
+saveas(side_by_side_plus_timeseries_cheat1,filename,'png')
+
+
+
+
+side_by_side_plus_timeseries_cheat2 = figure;
+ set(side_by_side_plus_timeseries_cheat2, 'Position', [100 500 960 720])
+
+subplot(3,2,[3 5])
+loglog(H_pre.Frequencies,H_pre.Data,'k')
+ylim([1E-8 1E2])
+ylabel('Power Spectral Density [m^2 Hz^{-1}]')
+xlabel('Frequency [Hz]')
+title({'March 7-11, 2011','normal'})
+
+subplot(3,2,[4 6])
+loglog(H_tsu.Frequencies,H_tsu.Data,'k')
+ylim([1E-8 1E2])
+xlabel('Frequency [Hz]')
+title({'March 11-16, 2011','tsunami'})
+filename = '../images/normal_and_tsunami_sfo_loglog_psd_with_timeseries_cheat2';
+saveas(side_by_side_plus_timeseries_cheat2,filename,'eps')
+saveas(side_by_side_plus_timeseries_cheat2,filename,'png')
+
+
+
+
+% variance preserving?
+
+fvp = figure(988);
+semilogx(H_tsu.Frequencies,H_tsu.Data.*H_tsu.Frequencies,'color',[0.7 0.7 0.7]);
+hold on
+semilogx(H_pre.Frequencies,H_pre.Data.*H_pre.Frequencies,'k','linewidth',2);
+
+ylabel('Power Spectral Density [m^2]')
+xlabel('Frequency [Hz]')
+title({[station.name,' NOAA tsunami capable station, ',num2str(station.id)],'normal conditions'})
+filename = '../images/var_preserve_spectra_sfo';
+saveas(fvp,filename,'epsc');
+saveas(fvp,filename,'jpg');
+
+
 
